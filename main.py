@@ -797,7 +797,7 @@ if __name__ == "__main__":
                     )
                 )
         finally:
-            budget.record_cost(run_cost_manager.current_usage)
+            budget.record_run_cost(run_cost_manager.current_usage)
             print(f"Run cost: ${run_cost_manager.current_usage:.4f}")
 
     template_bot.log_report_summary(forecast_reports)

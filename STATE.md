@@ -15,8 +15,10 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
   Deckel = Repo-Variable `BOT_MONTHLY_BUDGET_USD` (ohne Variable 85 $). Ab 80 % prognostiziert Sonnet statt Opus,
   am Deckel setzt der Bot bis Monatsende aus. Das API-Guthaben (100 $/Monat, Reset am 1.) teilen sich mehrere Projekte;
   das Kostenbuch kennt nur die Bot-Kosten.
-- Workflows Tournament + Test teilen die Warteschlange `bot-cost-ledger`. Der Bot-Job hat nur Leserechte;
-  das Kostenbuch kommt als Artefakt in den Job `save_ledger` (einziger mit Schreibrecht, committet auf main).
+- Workflows Tournament + Test teilen die Warteschlange `bot-cost-ledger`. Der Bot-Job hat nur Leserechte und
+  checkt immer die Spitze von main aus. Er übergibt nur die eigenen Laufkosten (`run_cost.json`) als Artefakt an
+  `save_ledger` (einziger Job mit Schreibrecht); der addiert sie auf `kosten.json` an der Spitze von main
+  (`python3 budget.py merge-run-cost`, bis zu 3 Versuche). So überschreibt kein veralteter Stand neuere Summen.
 
 ## Offen
 1. Kevin: `gh auth refresh -h github.com -s workflow`, dann Push (Commits c7b73bb..HEAD).

@@ -22,6 +22,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
+          # Tip, not the triggering commit: a queued run must see the newest ledger.
+          ref: main
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
@@ -52,8 +54,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: kosten
-          path: kosten.json
+          name: run-cost
+          path: run_cost.json
           if-no-files-found: ignore
 
   # Only this job can write to the repo; the bot job above runs third-party
@@ -68,18 +70,27 @@ jobs:
       - name: Check out default branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.repository.default_branch }}
-      - name: Fetch cost ledger
+          ref: main
+      - name: Fetch this run's cost
         uses: actions/download-artifact@v4
         with:
-          name: kosten
+          name: run-cost
+          path: ${{ runner.temp }}
         continue-on-error: true
-      - name: Commit cost ledger
+      - name: Add run cost to the ledger at the branch tip
+        env:
+          RUN_COST: ${{ runner.temp }}/run_cost.json
+          BRANCH: main
         run: |
-          if [ -f kosten.json ] && [ -n "$(git status --porcelain kosten.json)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$RUN_COST" ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            python3 budget.py merge-run-cost "$RUN_COST"
             git add kosten.json
             git commit -m "Update cost ledger"
-            git push
-          fi
+            git push origin "HEAD:$BRANCH" && exit 0
+          done
+          exit 1
