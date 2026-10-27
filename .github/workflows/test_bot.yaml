@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: read
 
 
 # Daily job to run the simple forecast bot
@@ -21,6 +21,8 @@ jobs:
       # setup repository with all necessary dependencies - keep as is
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -45,14 +47,38 @@ jobs:
           ASKNEWS_CLIENT_ID: ${{ secrets.ASKNEWS_CLIENT_ID }}
           ASKNEWS_SECRET: ${{ secrets.ASKNEWS_SECRET }}
 
-      - name: Save monthly cost ledger
+      - name: Hand cost ledger to the commit job
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kosten
+          path: kosten.json
+          if-no-files-found: ignore
+
+  # Only this job can write to the repo; the bot job above runs third-party
+  # packages and keeps a read-only token.
+  save_ledger:
+    needs: forecast_job
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out default branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Fetch cost ledger
+        uses: actions/download-artifact@v4
+        with:
+          name: kosten
+        continue-on-error: true
+      - name: Commit cost ledger
         run: |
-          if [ -n "$(git status --porcelain kosten.json)" ]; then
+          if [ -f kosten.json ] && [ -n "$(git status --porcelain kosten.json)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add kosten.json
             git commit -m "Update cost ledger"
-            git pull --rebase
             git push
           fi
