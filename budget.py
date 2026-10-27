@@ -17,12 +17,13 @@ from typing import Literal
 LEDGER_PATH = Path(__file__).parent / "kosten.json"
 RUN_COST_PATH = Path(__file__).parent / "run_cost.json"
 
-# The API credit ($100/month) is shared with other projects, so the bot's own
-# cap comes from the BOT_MONTHLY_BUDGET_USD repo variable (unset: 85, which
-# leaves headroom for cost-tracking gaps). Forecasts fall back to Sonnet from
-# 80 % of the cap.
-STOP_FROM_USD = float(os.getenv("BOT_MONTHLY_BUDGET_USD") or 85.0)
-SAVE_FROM_USD = 0.8 * STOP_FROM_USD
+# The bot may use the free API credit ($100/month, reset on the 1st) but never
+# more. The cap stays below it to leave headroom for cost-tracking gaps:
+# BOT_MONTHLY_BUDGET_USD repo variable, unset 85. BOT_BUDGET_MONTH_OVERRIDE
+# ("2026-10=12") replaces it for that one month only, e.g. when other usage
+# already spent part of the credit. Forecasts fall back to Sonnet from 80 %.
+DEFAULT_CAP_USD = 85.0
+SAVE_SHARE = 0.8
 
 BudgetMode = Literal["full", "save", "stop"]
 
@@ -47,15 +48,24 @@ def spent_this_month() -> float:
     return _load_ledger().get(_current_month(), 0.0)
 
 
+def cap_this_month() -> float:
+    override = os.getenv("BOT_BUDGET_MONTH_OVERRIDE") or ""
+    month, _, cap = override.partition("=")
+    if month.strip() == _current_month() and cap.strip():
+        return float(cap)
+    return float(os.getenv("BOT_MONTHLY_BUDGET_USD") or DEFAULT_CAP_USD)
+
+
 def remaining_until_stop() -> float:
-    return max(STOP_FROM_USD - spent_this_month(), 0.0)
+    return max(cap_this_month() - spent_this_month(), 0.0)
 
 
 def budget_mode() -> BudgetMode:
     spent = spent_this_month()
-    if spent >= STOP_FROM_USD:
+    cap = cap_this_month()
+    if spent >= cap:
         return "stop"
-    if spent >= SAVE_FROM_USD:
+    if spent >= SAVE_SHARE * cap:
         return "save"
     return "full"
 

@@ -712,13 +712,14 @@ if __name__ == "__main__":
     # uncomment and edit to pin specific models.
     mode = budget.budget_mode()
     print(
-        f"Budget: ${budget.spent_this_month():.2f} spent this month, mode '{mode}'"
+        f"Budget: ${budget.spent_this_month():.2f} of ${budget.cap_this_month():.2f}"
+        f" spent this month, mode '{mode}'"
     )
     if mode == "stop":
         print("Monthly budget reached, not forecasting until next month.")
         sys.exit(0)
 
-    # Sonnet replaces Opus for forecasts once spend passes budget.SAVE_FROM_USD.
+    # Sonnet replaces Opus for forecasts once spend passes budget.SAVE_SHARE of the cap.
     forecaster_model = (
         "anthropic/claude-opus-5-5" if mode == "full" else "anthropic/claude-sonnet-5-5"
     )

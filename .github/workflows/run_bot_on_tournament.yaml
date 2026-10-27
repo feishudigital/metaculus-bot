@@ -43,6 +43,7 @@ jobs:
         # Store under Settings --> Secrets and variables --> Actions
         env:
           BOT_MONTHLY_BUDGET_USD: ${{ vars.BOT_MONTHLY_BUDGET_USD }}
+          BOT_BUDGET_MONTH_OVERRIDE: ${{ vars.BOT_BUDGET_MONTH_OVERRIDE }}
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }} # replace this with the name of the variable under which you stored your own Metaculus token
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
