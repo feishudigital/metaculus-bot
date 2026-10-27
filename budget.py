@@ -5,15 +5,19 @@ GitHub Actions runs that otherwise share no state.
 """
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
 LEDGER_PATH = Path(__file__).parent / "kosten.json"
 
-# Monthly API budget is $100; these leave headroom for cost-tracking gaps.
-SAVE_FROM_USD = 70.0
-STOP_FROM_USD = 85.0
+# The API credit ($100/month) is shared with other projects, so the bot's own
+# cap comes from the BOT_MONTHLY_BUDGET_USD repo variable (unset: 85, which
+# leaves headroom for cost-tracking gaps). Forecasts fall back to Sonnet from
+# 80 % of the cap.
+STOP_FROM_USD = float(os.getenv("BOT_MONTHLY_BUDGET_USD") or 85.0)
+SAVE_FROM_USD = 0.8 * STOP_FROM_USD
 
 BudgetMode = Literal["full", "save", "stop"]
 

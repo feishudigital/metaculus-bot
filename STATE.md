@@ -12,7 +12,9 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 - Prognose: 3× Claude Opus 5.5 (Effort medium), veröffentlicht wird der Median.
 - Parser/Zusammenfassung: Claude Haiku 5.5.
 - Kostendeckel `budget.py`: Kostenbuch `kosten.json` (je Monat, vom Workflow zurück-committet).
-  Ab 70 $ prognostiziert Sonnet statt Opus, ab 85 $ setzt der Bot bis Monatsende aus. Budget 100 $/Monat.
+  Deckel = Repo-Variable `BOT_MONTHLY_BUDGET_USD` (ohne Variable 85 $). Ab 80 % prognostiziert Sonnet statt Opus,
+  am Deckel setzt der Bot bis Monatsende aus. Das API-Guthaben (100 $/Monat, Reset am 1.) teilen sich mehrere Projekte;
+  das Kostenbuch kennt nur die Bot-Kosten.
 - Workflows Tournament + Test teilen die Warteschlange `bot-cost-ledger`. Der Bot-Job hat nur Leserechte;
   das Kostenbuch kommt als Artefakt in den Job `save_ledger` (einziger mit Schreibrecht, committet auf main).
 
@@ -23,6 +25,8 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 3. Kevin: Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` im Repo anlegen.
 4. Test Bot (bot-testing-area) laufen lassen: echte Kosten je Frage messen, alle Fragetypen prüfen.
 5. Erst danach Tournament-Workflow aktivieren. Nur die ERSTE MiniBench zählt für Leistungsgutschriften.
+6. Oktober: Kevin meldete am 28.10. nur noch 14,49 $ Restguthaben → Variable steht auf 10. Am 01.11. auf den
+   mit Kevin vereinbarten Monatswert setzen (`gh variable set BOT_MONTHLY_BUDGET_USD --body <wert>`).
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
