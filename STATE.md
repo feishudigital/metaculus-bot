@@ -13,10 +13,11 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 - Parser/Zusammenfassung: Claude Haiku 5.5.
 - Kostendeckel `budget.py`: Kostenbuch `kosten.json` (je Monat, vom Workflow zurück-committet).
   Ab 70 $ prognostiziert Sonnet statt Opus, ab 85 $ setzt der Bot bis Monatsende aus. Budget 100 $/Monat.
-- Workflows Tournament + Test teilen die Warteschlange `bot-cost-ledger`.
+- Workflows Tournament + Test teilen die Warteschlange `bot-cost-ledger`. Der Bot-Job hat nur Leserechte;
+  das Kostenbuch kommt als Artefakt in den Job `save_ledger` (einziger mit Schreibrecht, committet auf main).
 
 ## Offen
-1. Kevin: `gh auth refresh -h github.com -s workflow`, dann Push von c7b73bb.
+1. Kevin: `gh auth refresh -h github.com -s workflow`, dann Push (Commits c7b73bb..HEAD).
 2. Direkt nach dem Push: Workflows „Forecast on new AI tournament questions“ und „Metaculus Cup“ deaktivieren
    (Cup bringt Bots kein Preisgeld und kostet nur).
 3. Kevin: Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` im Repo anlegen.
