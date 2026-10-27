@@ -21,9 +21,9 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
   (`python3 budget.py merge-run-cost`, bis zu 3 Versuche). So überschreibt kein veralteter Stand neuere Summen.
 
 ## Offen
-1. Kevin: `gh auth refresh -h github.com -s workflow`, dann Push (Commits c7b73bb..HEAD).
-2. Direkt nach dem Push: Workflows „Forecast on new AI tournament questions“ und „Metaculus Cup“ deaktivieren
-   (Cup bringt Bots kein Preisgeld und kostet nur).
+1. ✓ 28.10.: gh-Scope `workflow` ergänzt, alles auf GitHub.
+2. ✓ 28.10.: Workflows Tournament und Metaculus Cup per `gh workflow disable` gesperrt (Cup zahlt Bots kein
+   Preisgeld). Aktiv sind nur „Test Bot“ (nur von Hand) und „review_bot“ (wöchentlich, nur lesend).
 3. Kevin: Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` im Repo anlegen.
 4. Test Bot (bot-testing-area) laufen lassen: echte Kosten je Frage messen, alle Fragetypen prüfen.
 5. Erst danach Tournament-Workflow aktivieren. Nur die ERSTE MiniBench zählt für Leistungsgutschriften.
