@@ -1,12 +1,14 @@
 import argparse
 import asyncio
 import logging
+import sys
 from datetime import datetime, timezone
 from typing import Literal
 
 import dotenv
 
 # Runtime helpers (env validation, banners, dependency-warning suppression).
+import budget
 from bot_helpers import (
     check_environment,
     print_run_summary_banner,
@@ -22,6 +24,7 @@ from forecasting_tools import (
     ForecastBot,
     GeneralLlm,
     MetaculusClient,
+    MonetaryCostManager,
     MetaculusQuestion,
     MultipleChoiceQuestion,
     NumericDistribution,
@@ -707,25 +710,42 @@ if __name__ == "__main__":
     # Configure the bot. The `llms=` block below is commented out to use
     # whichever default models forecasting-tools picks based on your env vars;
     # uncomment and edit to pin specific models.
+    mode = budget.budget_mode()
+    print(
+        f"Budget: ${budget.spent_this_month():.2f} spent this month, mode '{mode}'"
+    )
+    if mode == "stop":
+        print("Monthly budget reached, not forecasting until next month.")
+        sys.exit(0)
+
+    # Sonnet replaces Opus for forecasts once spend passes budget.SAVE_FROM_USD.
+    forecaster_model = (
+        "anthropic/claude-opus-5-5" if mode == "full" else "anthropic/claude-sonnet-5-5"
+    )
     template_bot = FallTemplateBot2026(
         research_reports_per_question=1,
-        predictions_per_research_report=5,
+        predictions_per_research_report=3,
         use_research_summary_to_forecast=False,
         publish_reports_to_metaculus=publish_to_metaculus,
         folder_to_save_reports_to=None,
         skip_previously_forecasted_questions=True,
         extra_metadata_in_explanation=True,
-        # llms={
-        #     "default": GeneralLlm(
-        #         model="openrouter/openai/gpt-4o",
-        #         temperature=0.3,
-        #         timeout=40,
-        #         allowed_tries=2,
-        #     ),
-        #     "summarizer": "openai/gpt-4o-mini",
-        #     "researcher": "asknews/news-summaries",
-        #     "parser": "openai/gpt-4o-mini",
-        # },
+        llms={
+            "default": GeneralLlm(
+                model=forecaster_model,
+                reasoning_effort="medium",
+                timeout=300,
+                allowed_tries=2,
+            ),
+            "researcher": GeneralLlm(
+                model="anthropic/claude-sonnet-5-5",
+                web_search_options={"search_context_size": "medium"},
+                timeout=300,
+                allowed_tries=2,
+            ),
+            "summarizer": "anthropic/claude-haiku-5-5",
+            "parser": "anthropic/claude-haiku-5-5",
+        },
     )
 
     # Per-mode tournament URL shown in the summary banner footer. These
@@ -741,39 +761,44 @@ if __name__ == "__main__":
     # exceptions, since return_exceptions=True) which then flows into the
     # summary printers below.
     client = MetaculusClient()
-    if run_mode == "tournament":
-        seasonal_tournament_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                client.CURRENT_AI_COMPETITION_ID, return_exceptions=True
-            )
-        )
-        minibench_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                client.CURRENT_MINIBENCH_ID, return_exceptions=True
-            )
-        )
-        forecast_reports = seasonal_tournament_reports + minibench_reports
-    elif run_mode == "metaculus_cup":
-        # The Metaculus Cup may be uninitialized near the start of a season
-        # (Jan/May/Sep). MetaculusClient.ACX_2025_TOURNAMENT = 32564 and
-        # MetaculusClient.AI_2027_TOURNAMENT_ID = "ai-2027" are also valid
-        # targets here.
-        template_bot.skip_previously_forecasted_questions = False
-        forecast_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                client.CURRENT_METACULUS_CUP_ID, return_exceptions=True
-            )
-        )
-    elif run_mode == "test_questions":
-        # The bot-testing-area tournament contains all question types and is
-        # the recommended target for smoke-testing your bot.
-        # https://www.metaculus.com/tournament/bot-testing-area/
-        template_bot.skip_previously_forecasted_questions = False
-        forecast_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                "bot-testing-area", return_exceptions=True
-            )
-        )
+    with MonetaryCostManager(budget.remaining_until_stop()) as run_cost_manager:
+        try:
+            if run_mode == "tournament":
+                seasonal_tournament_reports = asyncio.run(
+                    template_bot.forecast_on_tournament(
+                        client.CURRENT_AI_COMPETITION_ID, return_exceptions=True
+                    )
+                )
+                minibench_reports = asyncio.run(
+                    template_bot.forecast_on_tournament(
+                        client.CURRENT_MINIBENCH_ID, return_exceptions=True
+                    )
+                )
+                forecast_reports = seasonal_tournament_reports + minibench_reports
+            elif run_mode == "metaculus_cup":
+                # The Metaculus Cup may be uninitialized near the start of a season
+                # (Jan/May/Sep). MetaculusClient.ACX_2025_TOURNAMENT = 32564 and
+                # MetaculusClient.AI_2027_TOURNAMENT_ID = "ai-2027" are also valid
+                # targets here.
+                template_bot.skip_previously_forecasted_questions = False
+                forecast_reports = asyncio.run(
+                    template_bot.forecast_on_tournament(
+                        client.CURRENT_METACULUS_CUP_ID, return_exceptions=True
+                    )
+                )
+            elif run_mode == "test_questions":
+                # The bot-testing-area tournament contains all question types and is
+                # the recommended target for smoke-testing your bot.
+                # https://www.metaculus.com/tournament/bot-testing-area/
+                template_bot.skip_previously_forecasted_questions = False
+                forecast_reports = asyncio.run(
+                    template_bot.forecast_on_tournament(
+                        "bot-testing-area", return_exceptions=True
+                    )
+                )
+        finally:
+            budget.record_cost(run_cost_manager.current_usage)
+            print(f"Run cost: ${run_cost_manager.current_usage:.4f}")
 
     template_bot.log_report_summary(forecast_reports)
     print_run_summary_banner(
