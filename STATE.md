@@ -1,6 +1,6 @@
 # STATE — Metaculus-Prognose-Bot
 
-**Stand:** 2026-10-28 · Bot vorbereitet, noch nicht live
+**Stand:** 2026-10-28 · Bot LIVE (Tournament + MiniBench, alle 20 min)
 
 ## Was es ist
 Fork von `Metaculus/metac-bot-template` als `feishudigital/metaculus-bot` (öffentlich).
@@ -26,11 +26,14 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 1. ✓ 28.10.: gh-Scope `workflow` ergänzt, alles auf GitHub.
 2. ✓ 28.10.: Workflows Tournament und Metaculus Cup per `gh workflow disable` gesperrt (Cup zahlt Bots kein
    Preisgeld). Aktiv sind nur „Test Bot“ (nur von Hand) und „review_bot“ (wöchentlich, nur lesend).
-3. Kevin: Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` im Repo anlegen.
-4. Test Bot (bot-testing-area) laufen lassen: echte Kosten je Frage messen, alle Fragetypen prüfen.
-5. Erst danach Tournament-Workflow aktivieren. Nur die ERSTE MiniBench zählt für Leistungsgutschriften.
+3. ✓ 28.10.: Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` angelegt (Kevin).
+4. Testlauf im bot-testing-area übersprungen (Kevin 28.10.: „direkt richtig“). Tournament-Workflow seit
+   28.10. 00:01 UTC aktiv. Erster Lauf 40606050585: API-Zugang ok, 0 offene Fragen in 33121 + minibench,
+   0 $ Kosten, kein Kostenbuch-Commit (richtig so). Offen: ersten Lauf MIT Fragen im Log prüfen (Kosten je
+   Frage, alle Fragetypen, Kommentar veröffentlicht, `kosten.json`-Commit da).
+5. Bei 0 $ meldet `save_ledger` „Artifact not found“ (continue-on-error, harmlos).
 6. Oktober: 14,49 $ Restguthaben (Kevin 28.10.) → `BOT_BUDGET_MONTH_OVERRIDE=2026-10=12`; ab 01.11. gilt
-   automatisch 85 $. Nach dem Testlauf Kostenbuch mit Kevins Restguthaben in der Console vergleichen; zählt der
+   automatisch 85 $. Nach dem ersten Lauf mit Fragen Kostenbuch mit Kevins Restguthaben in der Console vergleichen; zählt der
    Bot genau, Standard-Deckel auf ~92 $ anheben.
 
 ## Fallen
