@@ -25,10 +25,10 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 ## Offen
 1. ✓ 28.10.: gh-Scope `workflow`, Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` (Kevin). Metaculus-Cup-
    Workflow gesperrt (zahlt Bots kein Preisgeld); „Test Bot“ nur von Hand, „review_bot“ wöchentlich, nur lesend.
-2. Testlauf im bot-testing-area übersprungen (Kevin 28.10.: „direkt richtig“). Tournament-Workflow seit
-   28.10. 00:01 UTC aktiv. Erster Lauf 40606050585: API-Zugang ok, 0 offene Fragen in 33121 + minibench,
-   0 $ Kosten, kein Kostenbuch-Commit (richtig so). Offen: ersten Lauf MIT Fragen im Log prüfen (Kosten je
-   Frage, alle Fragetypen, Kommentar veröffentlicht, `kosten.json`-Commit da).
+2. ✓ 28.10. 08:56 UTC erste Prognose (Frage 46208, Mehrfachauswahl, 0,43 $, Kostenbuch-Commit ok). Nur durch
+   Handstart gerettet: GitHub-Zeitplan startete in 8 h nur 1× statt ~24×. Fragen sind je 3 h offen (Haupt-
+   wettbewerb ~alle 3 h zur vollen Stunde, MiniBench zu beliebigen Zeiten) → offen: Auslöser vom Pi alle
+   20 min per Fine-grained-Token (nur Actions, nur dieses Repo). Gratis-Check: Workflow „Check Metaculus“.
 3. Oktober: 14,49 $ Restguthaben (Kevin 28.10.) → `BOT_BUDGET_MONTH_OVERRIDE=2026-10=12`; ab 01.11. gilt
    automatisch 85 $. Nach dem ersten Lauf mit Fragen Kostenbuch mit Kevins Console-Restguthaben
    vergleichen; zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
