@@ -37,5 +37,4 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
 - litellm 1.105.1 kennt die Preise der 5.5-Modelle und zählt Websuche mit 0,01 $ je Suche.
 - Gratis-LLM-Guthaben von Metaculus ist für die Herbstsaison geschlossen; neuer Antrag ein paar Wochen vor Januar.
-- Fork: Zeitplan läuft erst nach Klick auf „I understand my workflows…“ (Actions-Seite) und dem nächsten Push auf
-  main; danach gesperrte Workflows mit `gh workflow list --all` prüfen. Bei 0 $ meldet `save_ledger` „Artifact not found“ (harmlos).
+- Fork: Zeitplan erst nach Klick „I understand my workflows…“ + neuem Push auf main; 0 $ → „Artifact not found“ = ok.
