@@ -3,7 +3,7 @@ name: Forecast on new AI tournament questions
 on:
   workflow_dispatch:
   schedule:
-    - cron: "7,27,47 * * * *" # every 20 min, offset off the hour. Make sure to skip already-forecasted questions!
+    - cron: "2-59/5 * * * *" # every 5 min (GitHub drops many scheduled runs), off the hour. Already-forecasted questions are skipped.
 
 # Add concurrency group to prevent parallel runs
 # Shared across bot workflows so cost-ledger commits never race.
