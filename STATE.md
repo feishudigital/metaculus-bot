@@ -27,8 +27,8 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
    Workflow gesperrt (zahlt Bots kein Preisgeld); „Test Bot“ nur von Hand, „review_bot“ wöchentlich, nur lesend.
 2. ✓ 28.10. 08:56 UTC erste Prognose (Frage 46208, Mehrfachauswahl, 0,43 $, Kostenbuch-Commit ok). Nur durch
    Handstart gerettet: GitHub-Zeitplan startete in 8 h nur 1× statt ~24×. Fragen sind je 3 h offen (Haupt-
-   wettbewerb ~alle 3 h zur vollen Stunde, MiniBench zu beliebigen Zeiten) → offen: Auslöser vom Pi alle
-   20 min per Fine-grained-Token (nur Actions, nur dieses Repo). Gratis-Check: Workflow „Check Metaculus“.
+   wettbewerb ~alle 3 h zur vollen Stunde, MiniBench beliebig). Test ab 28.10. 13:05 UTC: Zeitplan alle 5 min, bis
+   29.10. Abstände messen; Lücke > 2 h oder verpasste Frage → Auslöser vom Pi (Fine-grained-Token, nur Actions).
 3. Oktober: 14,49 $ Restguthaben (Kevin 28.10.) → `BOT_BUDGET_MONTH_OVERRIDE=2026-10=12`; ab 01.11. gilt
    automatisch 85 $. Nach dem ersten Lauf mit Fragen Kostenbuch mit Kevins Console-Restguthaben
    vergleichen; zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
