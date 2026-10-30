@@ -1,6 +1,6 @@
 name: Check Metaculus
 
-# Free health check without LLM calls: token account, newest questions per tournament.
+# Free health check without LLM calls: token account, newest questions per tournament and whether the bot forecasted them.
 on:
   workflow_dispatch:
 
