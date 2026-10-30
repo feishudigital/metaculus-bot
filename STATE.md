@@ -25,10 +25,10 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 ## Offen
 1. ✓ 28.10.: gh-Scope `workflow`, Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` (Kevin). Metaculus-Cup-
    Workflow gesperrt (zahlt Bots kein Preisgeld); „Test Bot“ nur von Hand, „review_bot“ wöchentlich, nur lesend.
-2. ✓ 28.10. 08:56 UTC erste Prognose (Frage 46208, Mehrfachauswahl, 0,43 $, Kostenbuch-Commit ok). Nur durch
-   Handstart gerettet: GitHub-Zeitplan startete in 8 h nur 1× statt ~24×. Fragen sind je 3 h offen (Haupt-
-   wettbewerb ~alle 3 h zur vollen Stunde, MiniBench beliebig). Test ab 28.10. 13:05 UTC: Zeitplan alle 5 min, bis
-   29.10. Abstände messen; Lücke > 2 h oder verpasste Frage → Auslöser vom Pi (Fine-grained-Token, nur Actions).
+2. GitHub-Zeitplan gescheitert: alle 5 min gesetzt, 28.10. 13:05 – 30.10. 01:25 nur 7 Starts (Lücken bis 7 h).
+   Hauptwettbewerb seit 28.10. 06:00: 10 Fragen (je 3 h offen), 9 beantwortet (2 nur per Handstart), 46281
+   verpasst; 4,90 $ = 0,49 $/Frage. MiniBench seit 26.10. ohne neue Fragen. → Auslöser vom Pi alle 10 min
+   (`~/metaculus-trigger.sh` + Cron, Fine-grained-Token nur Actions). Wartet auf Kevins OK + Token.
 3. Oktober: 14,49 $ Restguthaben (Kevin 28.10.) → `BOT_BUDGET_MONTH_OVERRIDE=2026-10=12`; ab 01.11. gilt
    automatisch 85 $. Nach dem ersten Lauf mit Fragen Kostenbuch mit Kevins Console-Restguthaben
    vergleichen; zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
