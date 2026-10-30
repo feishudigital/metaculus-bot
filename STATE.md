@@ -28,8 +28,7 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 2. GitHub-Zeitplan gescheitert: alle 5 min gesetzt, 28.10. 13:05 – 30.10. 01:25 nur 7 Starts (Lücken bis 7 h).
    Hauptwettbewerb seit 28.10. 06:00: 10 Fragen (je 3 h offen), 9 beantwortet (2 nur per Handstart), 46281
    verpasst; 4,90 $ = 0,49 $/Frage. ✓ 30.10.: Pi (192.168.178.28) startet den Workflow per Cron „1-59/10“
-   (`~/metaculus-trigger.sh`, Token `~/.metaculus_gh_token` nur Actions, kein Ablauf gemeldet). Letzter Erfolg
-   `~/.metaculus_trigger_ok`, Fehler `~/metaculus-trigger.log`. GitHub-Zeitplan bleibt als Reserve.
+   (`~/metaculus-trigger.sh`, Token nur Actions, kein Ablauf gemeldet; Erfolg/Fehler in `~/.metaculus_trigger_ok`/`.log`).
 3. Oktober: 14,49 $ Restguthaben (Kevin 28.10.) → `BOT_BUDGET_MONTH_OVERRIDE=2026-10=12`; ab 01.11. gilt
    automatisch 85 $. Nach dem ersten Lauf mit Fragen Kostenbuch mit Kevins Console-Restguthaben
    vergleichen; zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
