@@ -19,10 +19,10 @@ RUN_COST_PATH = Path(__file__).parent / "run_cost.json"
 
 # The bot may use the free API credit ($100/month, reset on the 1st) but never
 # more. The cap stays below it to leave headroom for cost-tracking gaps:
-# BOT_MONTHLY_BUDGET_USD repo variable, unset 85. BOT_BUDGET_MONTH_OVERRIDE
+# BOT_MONTHLY_BUDGET_USD repo variable, unset 95 (Kevin 02.11.2026). BOT_BUDGET_MONTH_OVERRIDE
 # ("2026-10=12") replaces it for that one month only, e.g. when other usage
 # already spent part of the credit. Forecasts fall back to Sonnet from 80 %.
-DEFAULT_CAP_USD = 85.0
+DEFAULT_CAP_USD = 95.0
 SAVE_SHARE = 0.8
 
 BudgetMode = Literal["full", "save", "stop"]

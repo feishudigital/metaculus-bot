@@ -9,11 +9,11 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 
 ## Aufbau (Commit c7b73bb)
 - Recherche: Claude Sonnet 5.5 mit Websuche (max. 5 Suchen je Frage, über litellm `web_search_options`).
-- Prognose: 3× Claude Opus 5.5 (Effort medium), veröffentlicht wird der Median.
+- Prognose: 3× Opus 5.5 im Hauptwettbewerb, 3× Sonnet 5.5 in der MiniBench (Kevin 02.11.: Topf/Frage ~165 $ vs. ~17 $); Median.
 - Parser/Zusammenfassung: Claude Haiku 5.5.
 - Kostendeckel `budget.py`: Kostenbuch `kosten.json` (je Monat, vom Workflow zurück-committet).
   Kevin 28.10.: Der Bot darf das ganze freie API-Guthaben nutzen (100 $/Monat, Reset am 1.), aber NIE darüber. Kein anderes Projekt nutzt die API zurzeit; ändert sich das, sagt Kevin Bescheid → Deckel senken.
-  Deckel = Repo-Variable `BOT_MONTHLY_BUDGET_USD` (ohne Variable 85 $, 15 $ Reserve für Zählfehler);
+  Deckel = Repo-Variable `BOT_MONTHLY_BUDGET_USD` (ohne Variable 95 $, Kevin 02.11.; 5 $ Reserve für Zählfehler);
   `BOT_BUDGET_MONTH_OVERRIDE` = „JJJJ-MM=Betrag“ gilt nur für diesen einen Monat. Ab 80 % Sonnet statt Opus,
   am Deckel setzt der Bot bis Monatsende aus. Das Kostenbuch kennt nur die Bot-Kosten.
 - Nur die Prognose-Jobs (Tournament + Test) teilen die Warteschlange `bot-forecast` (max. 180 min; seit 02.11., weil am
@@ -30,8 +30,8 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
    that is wasted“ (~290 Läufe/Tag inkl. Abbrüche). Kevin gab ihn 02.11. per Klick frei. Neu: GitHub-Cron nur
    `47 */3`, Pi soll alle 30 min (`3,33`) auslösen – Cron dafür braucht Kevins OK. Verpasst: MiniBench-Runde
    02.11. (28 Fragen, 46368–46395), Hauptwettbewerb 46281 + 46285–46288. Check zeigt Prognosen jetzt richtig.
-3. Oktober 6,07 $ (Deckel 12), November ab 85 $. Kostenbuch mit Kevins Console-Restguthaben vergleichen;
-   zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
+3. Oktober 6,07 $ (Deckel 12), November Deckel 95 $ (Override-Variable gelöscht). Offen: Kostenbuch einmal mit
+   Kevins Console-Verbrauch vergleichen (Reserve nur noch 5 $).
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.

@@ -686,6 +686,39 @@ class FallTemplateBot2026(ForecastBot):
         )
 
 
+OPUS = "anthropic/claude-opus-5-5"
+SONNET = "anthropic/claude-sonnet-5-5"
+
+
+def build_bot(forecaster_model: str, publish: bool) -> FallTemplateBot2026:
+    """Bot with three forecasts per question from forecaster_model, Sonnet web research and Haiku helpers."""
+    return FallTemplateBot2026(
+        research_reports_per_question=1,
+        predictions_per_research_report=3,
+        use_research_summary_to_forecast=False,
+        publish_reports_to_metaculus=publish,
+        folder_to_save_reports_to=None,
+        skip_previously_forecasted_questions=True,
+        extra_metadata_in_explanation=True,
+        llms={
+            "default": GeneralLlm(
+                model=forecaster_model,
+                reasoning_effort="medium",
+                timeout=300,
+                allowed_tries=2,
+            ),
+            "researcher": GeneralLlm(
+                model=SONNET,
+                web_search_options={"search_context_size": "medium"},
+                timeout=300,
+                allowed_tries=2,
+            ),
+            "summarizer": "anthropic/claude-haiku-5-5",
+            "parser": "anthropic/claude-haiku-5-5",
+        },
+    )
+
+
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
@@ -719,35 +752,13 @@ if __name__ == "__main__":
         print("Monthly budget reached, not forecasting until next month.")
         sys.exit(0)
 
-    # Sonnet replaces Opus for forecasts once spend passes budget.SAVE_SHARE of the cap.
-    forecaster_model = (
-        "anthropic/claude-opus-5-5" if mode == "full" else "anthropic/claude-sonnet-5-5"
-    )
-    template_bot = FallTemplateBot2026(
-        research_reports_per_question=1,
-        predictions_per_research_report=3,
-        use_research_summary_to_forecast=False,
-        publish_reports_to_metaculus=publish_to_metaculus,
-        folder_to_save_reports_to=None,
-        skip_previously_forecasted_questions=True,
-        extra_metadata_in_explanation=True,
-        llms={
-            "default": GeneralLlm(
-                model=forecaster_model,
-                reasoning_effort="medium",
-                timeout=300,
-                allowed_tries=2,
-            ),
-            "researcher": GeneralLlm(
-                model="anthropic/claude-sonnet-5-5",
-                web_search_options={"search_context_size": "medium"},
-                timeout=300,
-                allowed_tries=2,
-            ),
-            "summarizer": "anthropic/claude-haiku-5-5",
-            "parser": "anthropic/claude-haiku-5-5",
-        },
-    )
+    # Opus only for the main tournament (prize pool ~165 $ per question). MiniBench (~17 $ per
+    # question) always uses Sonnet so the monthly cap lasts for the main tournament (Kevin 02.11.2026).
+    # Once spend passes budget.SAVE_SHARE of the cap, Sonnet replaces Opus there as well.
+    main_model = OPUS if mode == "full" else SONNET
+    template_bot = build_bot(main_model, publish_to_metaculus)
+    minibench_bot = build_bot(SONNET, publish_to_metaculus)
+    print(f"Forecaster: {main_model} (main tournament), {SONNET} (MiniBench)")
 
     # Per-mode tournament URL shown in the summary banner footer. These
     # piggyback on the forecasting_tools SDK constants and need updating
@@ -771,7 +782,7 @@ if __name__ == "__main__":
                     )
                 )
                 minibench_reports = asyncio.run(
-                    template_bot.forecast_on_tournament(
+                    minibench_bot.forecast_on_tournament(
                         client.CURRENT_MINIBENCH_ID, return_exceptions=True
                     )
                 )
