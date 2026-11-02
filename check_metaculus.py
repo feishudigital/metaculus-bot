@@ -50,8 +50,14 @@ print(f"Account: {me.get('username')} (id {me.get('id')}, is_bot={me.get('is_bot
 
 for tournament in TOURNAMENTS:
     print(f"\n== Tournament {tournament}")
-    newest = get("/posts/", tournaments=tournament, order_by="-open_time", limit="20")
-    for post in newest.get("results", []):
+    # with_cp=true makes the list endpoint fill my_forecasts (as forecasting-tools does).
+    newest = get(
+        "/posts/", tournaments=tournament, order_by="-open_time", limit="40", with_cp="true"
+    )
+    posts = newest.get("results", [])
+    done = sum(forecasted(post) for post in posts)
+    print(f"  {done} of the {len(posts)} newest forecasted")
+    for post in posts:
         opened = field(post, "open_time")
         closes = field(post, "scheduled_close_time")
         print(

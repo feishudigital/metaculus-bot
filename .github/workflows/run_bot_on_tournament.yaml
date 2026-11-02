@@ -3,7 +3,7 @@ name: Forecast on new AI tournament questions
 on:
   workflow_dispatch:
   schedule:
-    - cron: "2-59/5 * * * *" # every 5 min (GitHub drops many scheduled runs), off the hour. Already-forecasted questions are skipped.
+    - cron: "47 */3 * * *" # sparse fallback only; the Pi dispatches at :03 and :33. GitHub disabled this fork on 02.11. for wasted compute (~290 runs/day).
 
 # Add concurrency group to prevent parallel runs
 # Shared across bot workflows so cost-ledger commits never race.
