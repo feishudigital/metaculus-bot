@@ -36,6 +36,5 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
-- litellm 1.105.1 kennt die Preise der 5.5-Modelle und zählt Websuche mit 0,01 $ je Suche.
-- Gratis-LLM-Guthaben von Metaculus ist für die Herbstsaison geschlossen; neuer Antrag ein paar Wochen vor Januar.
+- Gratis-Guthaben von Metaculus: Herbst geschlossen, neuer Antrag wenige Wochen vor Januar.
 - Fork: Zeitplan erst nach Klick „I understand my workflows…“ + Push auf main; zu viele Läufe → GitHub sperrt den Fork.
