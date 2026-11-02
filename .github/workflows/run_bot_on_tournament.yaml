@@ -5,12 +5,6 @@ on:
   schedule:
     - cron: "47 */3 * * *" # sparse fallback only; the Pi dispatches at :03 and :33. GitHub disabled this fork on 02.11. for wasted compute (~290 runs/day).
 
-# Add concurrency group to prevent parallel runs
-# Shared across bot workflows so cost-ledger commits never race.
-concurrency:
-  group: bot-cost-ledger
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
@@ -19,6 +13,14 @@ permissions:
 jobs:
   forecast_job:
     runs-on: ubuntu-latest # determines the machine that will run the job - keep as is
+    # Only the forecast job is serialized (shared with the other bot workflow), so a
+    # save_ledger job stuck waiting for a runner no longer blocks forecasting: on 30.10.2026
+    # one hung for 24 h and every forecast run in between was cancelled. save_ledger needs
+    # no lock, it rebases onto the branch tip and retries.
+    concurrency:
+      group: bot-forecast
+      cancel-in-progress: false
+    timeout-minutes: 180
     steps: # sets up the steps that will be run in order
       # setup repository with all necessary dependencies - keep as is
       - name: Check out repository
