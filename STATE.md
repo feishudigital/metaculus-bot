@@ -1,6 +1,6 @@
 # STATE — Metaculus-Prognose-Bot
 
-**Stand:** 2026-11-02 · Bot STEHT: GitHub hat Actions fürs Repo gesperrt
+**Stand:** 2026-11-02 · Actions wieder frei (Kevin klickte Fork-Freigabe), Pi-Auslöser wartet auf OK
 
 ## Was es ist
 Fork von `Metaculus/metac-bot-template` als `feishudigital/metaculus-bot` (öffentlich).
@@ -25,11 +25,11 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 ## Offen
 1. ✓ 28.10.: gh-Scope `workflow`, Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` (Kevin). Metaculus-Cup-
    Workflow gesperrt (zahlt Bots kein Preisgeld); „Test Bot“ nur von Hand, „review_bot“ wöchentlich, nur lesend.
-2. GitHub-Zeitplan gescheitert (alle 5 min gesetzt, 36 h nur 7 Starts); Fragen je 3 h offen, ~0,49 $/Frage.
-   30.10.–02.11.: Pi-Cron startete alle 10 min, 5 Fragen je ~2 min nach Öffnung
-   beantwortet. Seit 02.11. ~00:15 UTC: „Actions has been disabled for this repository“ (HTTP 422, GitHub-seitig,
-   Repo-Einstellung zeigt enabled) – vermutlich wegen ~144 Starts/Tag. Pi-Cron entfernt. Vorschlag: Bot direkt auf
-   dem Pi (aarch64, 7,8 GB, Python 3.13), braucht Anthropic-Key + Metaculus-Token in `~/.metaculus_bot.env`.
+2. GitHub-Zeitplan gescheitert (alle 5 min: 36 h nur 7 Starts); Fragen je 3 h offen, ~0,49 $/Frage.
+   30.10.–02.11. Pi-Cron alle 10 min (Dispatch-API) → 02.11. 00:15 UTC sperrte GitHub den Fork „to reduce compute
+   that is wasted“ (~290 Läufe/Tag inkl. Abbrüche). Kevin gab ihn 02.11. per Klick frei. Neu: GitHub-Cron nur
+   `47 */3`, Pi soll alle 30 min (`3,33`) auslösen – Cron dafür braucht Kevins OK. Verpasst: MiniBench-Runde
+   ab 02.11. (≥ 17 Fragen, 46379–46395); Hauptwettbewerb hatte keine neue Frage.
 3. Oktober 6,07 $ (Deckel 12), November ab 85 $. Kostenbuch mit Kevins Console-Restguthaben vergleichen;
    zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
 
