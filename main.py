@@ -781,11 +781,18 @@ if __name__ == "__main__":
                         client.CURRENT_AI_COMPETITION_ID, return_exceptions=True
                     )
                 )
-                minibench_reports = asyncio.run(
-                    minibench_bot.forecast_on_tournament(
-                        client.CURRENT_MINIBENCH_ID, return_exceptions=True
+                minibench_reports = []
+                if budget.minibench_allowed():
+                    minibench_reports = asyncio.run(
+                        minibench_bot.forecast_on_tournament(
+                            client.CURRENT_MINIBENCH_ID, return_exceptions=True
+                        )
                     )
-                )
+                else:
+                    print(
+                        f"MiniBench skipped: ${budget.main_tournament_reserve():.2f} stays"
+                        " reserved for the main tournament until month end."
+                    )
                 forecast_reports = seasonal_tournament_reports + minibench_reports
             elif run_mode == "metaculus_cup":
                 # The Metaculus Cup may be uninitialized near the start of a season

@@ -9,7 +9,8 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 
 ## Aufbau (Commit c7b73bb)
 - Recherche: Claude Sonnet 5.5 mit Websuche (max. 5 Suchen je Frage, über litellm `web_search_options`).
-- Prognose: 3× Opus 5.5 im Hauptwettbewerb, 3× Sonnet 5.5 in der MiniBench (Kevin 02.11.: Topf/Frage ~165 $ vs. ~17 $); Median.
+- Prognose: 3× Opus 5.5 im Hauptwettbewerb, 3× Sonnet in der MiniBench (Kevin 02.11.: Topf/Frage ~165 $ vs. ~17 $), Median.
+  MiniBench nur, solange 2 $ je Resttag unter der Sonnet-Schwelle fürs Hauptturnier frei bleiben (`budget.minibench_allowed`).
 - Parser/Zusammenfassung: Claude Haiku 5.5.
 - Kostendeckel `budget.py`: Kostenbuch `kosten.json` (je Monat, vom Workflow zurück-committet).
   Kevin 28.10.: Der Bot darf das ganze freie API-Guthaben nutzen (100 $/Monat, Reset am 1.), aber NIE darüber. Kein anderes Projekt nutzt die API zurzeit; ändert sich das, sagt Kevin Bescheid → Deckel senken.
@@ -23,15 +24,14 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
   (`python3 budget.py merge-run-cost`, bis zu 3 Versuche). So überschreibt kein veralteter Stand neuere Summen.
 
 ## Offen
-1. ✓ 28.10.: gh-Scope `workflow`, Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` (Kevin). Metaculus-Cup-
-   Workflow gesperrt (zahlt Bots kein Preisgeld); „Test Bot“ nur von Hand, „review_bot“ wöchentlich, nur lesend.
+1. ✓ Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY`; Cup-Workflow aus (kein Bot-Preisgeld); Test nur von Hand.
 2. GitHub-Zeitplan gescheitert (alle 5 min: 36 h nur 7 Starts); Fragen je 3 h offen, ~0,49 $/Frage.
    30.10.–02.11. Pi-Cron alle 10 min (Dispatch-API) → 02.11. 00:15 UTC sperrte GitHub den Fork „to reduce compute
-   that is wasted“ (~290 Läufe/Tag inkl. Abbrüche). Kevin gab ihn 02.11. per Klick frei. Neu: GitHub-Cron nur
-   `47 */3`, Pi soll alle 30 min (`3,33`) auslösen – Cron dafür braucht Kevins OK. Verpasst: MiniBench-Runde
+   that is wasted“ (~290 Läufe/Tag inkl. Abbrüche); Kevin gab ihn per Klick frei. Neu: GitHub-Cron nur
+   `47 */3`, Pi-Cron `3,33` (alle 30 min, Kevins OK 02.11., läuft). Verpasst: MiniBench-Runde
    02.11. (28 Fragen, 46368–46395), Hauptwettbewerb 46281 + 46285–46288. Check zeigt Prognosen jetzt richtig.
 3. Oktober 6,07 $ (Deckel 12), November Deckel 95 $ (Override-Variable gelöscht). Offen: Kostenbuch einmal mit
-   Kevins Console-Verbrauch vergleichen (Reserve nur noch 5 $).
+   Kevins Console-Verbrauch vergleichen (nur 5 $ Puffer).
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.

@@ -7,6 +7,7 @@ checkout can never overwrite newer totals. Standard library only: the commit
 job runs it without installing the project.
 """
 
+import calendar
 import json
 import os
 import sys
@@ -24,6 +25,11 @@ RUN_COST_PATH = Path(__file__).parent / "run_cost.json"
 # already spent part of the credit. Forecasts fall back to Sonnet from 80 %.
 DEFAULT_CAP_USD = 95.0
 SAVE_SHARE = 0.8
+# Below the Sonnet threshold, this much per remaining day of the month stays reserved for
+# the main tournament (~4 questions a day at ~0.50 $). MiniBench only gets what lies above
+# it, because the main tournament's prize pool is ~10x larger per question (Kevin 02.11.2026;
+# Sonnet alone made MiniBench only ~10 % cheaper, since web research dominates the cost).
+MAIN_RESERVE_PER_DAY_USD = 2.0
 
 BudgetMode = Literal["full", "save", "stop"]
 
@@ -58,6 +64,16 @@ def cap_this_month() -> float:
 
 def remaining_until_stop() -> float:
     return max(cap_this_month() - spent_this_month(), 0.0)
+
+
+def main_tournament_reserve() -> float:
+    now = datetime.now(timezone.utc)
+    days_left = calendar.monthrange(now.year, now.month)[1] - now.day + 1
+    return MAIN_RESERVE_PER_DAY_USD * days_left
+
+
+def minibench_allowed() -> bool:
+    return spent_this_month() + main_tournament_reserve() < SAVE_SHARE * cap_this_month()
 
 
 def budget_mode() -> BudgetMode:
