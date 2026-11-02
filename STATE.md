@@ -1,6 +1,6 @@
 # STATE — Metaculus-Prognose-Bot
 
-**Stand:** 2026-10-30 · Bot LIVE, Start alle 10 min vom Pi
+**Stand:** 2026-11-02 · Bot STEHT: GitHub hat Actions fürs Repo gesperrt
 
 ## Was es ist
 Fork von `Metaculus/metac-bot-template` als `feishudigital/metaculus-bot` (öffentlich).
@@ -25,13 +25,13 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 ## Offen
 1. ✓ 28.10.: gh-Scope `workflow`, Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY` (Kevin). Metaculus-Cup-
    Workflow gesperrt (zahlt Bots kein Preisgeld); „Test Bot“ nur von Hand, „review_bot“ wöchentlich, nur lesend.
-2. GitHub-Zeitplan gescheitert: alle 5 min gesetzt, 28.10. 13:05 – 30.10. 01:25 nur 7 Starts (Lücken bis 7 h).
-   Hauptwettbewerb seit 28.10. 06:00: 10 Fragen (je 3 h offen), 9 beantwortet (2 nur per Handstart), 46281
-   verpasst; 4,90 $ = 0,49 $/Frage. ✓ 30.10.: Pi (192.168.178.28) startet den Workflow per Cron „1-59/10“
-   (`~/metaculus-trigger.sh`, Token nur Actions, kein Ablauf gemeldet; Erfolg/Fehler in `~/.metaculus_trigger_ok`/`.log`).
-3. Oktober: 14,49 $ Restguthaben (Kevin 28.10.) → `BOT_BUDGET_MONTH_OVERRIDE=2026-10=12`; ab 01.11. gilt
-   automatisch 85 $. Nach dem ersten Lauf mit Fragen Kostenbuch mit Kevins Console-Restguthaben
-   vergleichen; zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
+2. GitHub-Zeitplan gescheitert (alle 5 min gesetzt, 36 h nur 7 Starts); Fragen je 3 h offen, ~0,49 $/Frage.
+   30.10.–02.11.: Pi-Cron startete alle 10 min, 5 Fragen je ~2 min nach Öffnung
+   beantwortet. Seit 02.11. ~00:15 UTC: „Actions has been disabled for this repository“ (HTTP 422, GitHub-seitig,
+   Repo-Einstellung zeigt enabled) – vermutlich wegen ~144 Starts/Tag. Pi-Cron entfernt. Vorschlag: Bot direkt auf
+   dem Pi (aarch64, 7,8 GB, Python 3.13), braucht Anthropic-Key + Metaculus-Token in `~/.metaculus_bot.env`.
+3. Oktober 6,07 $ (Deckel 12), November ab 85 $. Kostenbuch mit Kevins Console-Restguthaben vergleichen;
+   zählt der Bot genau, Standard-Deckel auf ~92 $ anheben.
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
