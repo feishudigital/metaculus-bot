@@ -30,8 +30,9 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
    that is wasted“ (~290 Läufe/Tag inkl. Abbrüche); Kevin gab ihn per Klick frei. Neu: GitHub-Cron nur
    `47 */3`, Pi-Cron `3,33` (alle 30 min, Kevins OK 02.11., läuft). Verpasst: MiniBench-Runde
    02.11. (28 Fragen, 46368–46395), Hauptwettbewerb 46281 + 46285–46288. Check zeigt Prognosen jetzt richtig.
-3. Oktober 6,07 $ (Deckel 12), November Deckel 95 $ (Override-Variable gelöscht). Offen: Kostenbuch einmal mit
-   Kevins Console-Verbrauch vergleichen (nur 5 $ Puffer).
+3. Oktober 6,07 $ (Deckel 12), November Deckel 95 $. Abgleich 02.11. 16:45 UTC: Console 96,49 $ von 100 $ übrig
+   (= 3,51 $ verbraucht) vs. Kostenbuch 7,01 $; litellm-Preise = offizielle (Opus 4/20, Sonnet 2/10 $/MTok, Suche 0,01 $).
+   Console vermutlich verzögert → am 03.11. erneut vergleichen, erst dann den 5-$-Puffer als sicher werten.
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
