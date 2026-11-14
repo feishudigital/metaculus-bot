@@ -1,6 +1,6 @@
 # STATE — Metaculus-Prognose-Bot
 
-**Stand:** 2026-11-02 · Actions wieder frei (Kevin klickte Fork-Freigabe), Pi-Auslöser wartet auf OK
+**Stand:** 2026-11-14 · Prüfung: läuft sauber; forecasting-tools 0.3.5 → 0.3.7
 
 ## Was es ist
 Fork von `Metaculus/metac-bot-template` als `feishudigital/metaculus-bot` (öffentlich).
@@ -25,14 +25,14 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 
 ## Offen
 1. ✓ Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY`; Cup-Workflow aus (kein Bot-Preisgeld); Test nur von Hand.
-2. GitHub-Zeitplan gescheitert (alle 5 min: 36 h nur 7 Starts); Fragen je 3 h offen, ~0,49 $/Frage.
-   30.10.–02.11. Pi-Cron alle 10 min (Dispatch-API) → 02.11. 00:15 UTC sperrte GitHub den Fork „to reduce compute
-   that is wasted“ (~290 Läufe/Tag inkl. Abbrüche); Kevin gab ihn per Klick frei. Neu: GitHub-Cron nur
-   `47 */3`, Pi-Cron `3,33` (alle 30 min, Kevins OK 02.11., läuft). Verpasst: MiniBench-Runde
-   02.11. (28 Fragen, 46368–46395), Hauptwettbewerb 46281 + 46285–46288. Check zeigt Prognosen jetzt richtig.
-3. Oktober 6,07 $ (Deckel 12), November Deckel 95 $. Abgleich 02.11. 16:45 UTC: Console 96,49 $ von 100 $ übrig
-   (= 3,51 $ verbraucht) vs. Kostenbuch 7,01 $; litellm-Preise = offizielle (Opus 4/20, Sonnet 2/10 $/MTok, Suche 0,01 $).
-   Console vermutlich verzögert → am 03.11. erneut vergleichen, erst dann den 5-$-Puffer als sicher werten.
+2. Auslöser: Pi-Cron `3,33` (Dispatch-API, Kevins OK 02.11.), GitHub-Cron nur `47 */3` als Rückfall.
+   Prüfung 14.11.: 279 von 281 Läufen 08.–14.11. grün (11.11.: 1× GitHub-Startfehler, 1× save_ledger
+   abgebrochen ohne Kosten), Pi-Fehler nur 3× am 04./05.11. (HTTP 000/500). Hauptwettbewerb: 40 von 40
+   neuesten Fragen beantwortet. Verpasst vor dem 02.11.: MiniBench 46368–46395, Haupt 46281 + 46285–46288.
+3. Oktober 6,07 $, November 43,29 $ (14.11.); Hauptwettbewerb ~2,0 $/Tag (06.–14.11.). MiniBench pausiert seit
+   05.11. (Reserve-Regel) → Hochrechnung ~77 $ am 30.11., ~18 $ unter dem Deckel ungenutzt. Vorschlag an Kevin
+   (14.11.): Sonnet-Schwelle und MiniBench an Reserve statt fester 80 % koppeln. Voraussetzung: Console-Abgleich
+   (02.11.: Console 3,51 $ vs. Kostenbuch 7,01 $; Nachprüfung vom 03.11. nie erfolgt) — Kevin liest ab.
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
