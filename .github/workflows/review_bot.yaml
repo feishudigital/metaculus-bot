@@ -6,6 +6,9 @@ on:
       days:
         description: "How many days back to look for resolved questions"
         default: "30"
+      dump_posts:
+        description: "Optional post IDs (space-separated): save the research, forecasts and summary sections of their bot comments for offline reading"
+        default: ""
   schedule:
     - cron: "0 6 * * 1" # weekly, Monday morning
 
@@ -42,6 +45,20 @@ jobs:
             --summary review.md
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
+      - name: Save report sections of selected posts
+        if: inputs.dump_posts != ''
+        env:
+          METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
+          DUMP_POSTS: ${{ inputs.dump_posts }}
+        run: |
+          mkdir -p sections
+          for post in $DUMP_POSTS; do
+            case "$post" in *[!0-9]*) echo "skipping non-numeric post id"; continue ;; esac
+            for section in summary research forecasts; do
+              uv run bot-review show "$post" --section "$section" --seconds-between-requests 3 \
+                > "sections/${post}_${section}.txt" 2>/dev/null || echo "show $post $section failed"
+            done
+          done
       - name: Show the summary in the run page
         run: cat review.md >> $GITHUB_STEP_SUMMARY
       - name: Keep the review
@@ -51,4 +68,6 @@ jobs:
           path: |
             review.json
             review.md
+            sections/
+          if-no-files-found: ignore
           retention-days: 90
