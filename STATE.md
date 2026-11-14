@@ -29,10 +29,10 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
    Prüfung 14.11.: 279/281 Läufe 08.–14.11. grün (2 Ausreißer 11.11. ohne Kosten), Pi-Fehler nur 3× 04./05.11. Haupt: 40/40
    neuesten beantwortet. Ergebnis 14.11. (`reviews/2026-11-14-minibench.md`): MiniBench 32 Fragen Schnitt +3,6
    (Ja/Nein +16,2, Zahlen −2,1, Stufen −7,0; keine Recherchelücke, kein Code-Fix); neu prüfen ab 20 Zahlenfragen Haupt.
-3. Oktober 6,07 $, November 43,29 $ (14.11.); Hauptwettbewerb ~2,0 $/Tag (06.–14.11.). MiniBench pausiert seit
-   05.11. (Reserve-Regel) → Hochrechnung ~77 $ am 30.11., ~18 $ unter dem Deckel ungenutzt. Vorschlag an Kevin
-   (14.11.): Sonnet-Schwelle und MiniBench an Reserve statt fester 80 % koppeln. Voraussetzung: Console-Abgleich
-   (02.11.: Console 3,51 $ vs. Kostenbuch 7,01 $; Nachprüfung vom 03.11. nie erfolgt) — Kevin liest ab.
+3. **forecasting-tools 0.3.5 zählte jeden LLM-Aufruf doppelt** (Mock-Test 14.11.: 2,2e-5 vs. litellm 1,1e-5; 0.3.7 korrekt).
+   Kostenbuch halbiert (f49824f): Okt 3,03 $, Nov 21,65 $ = Console 21,36 $ (Schlüssel „Metaculus“, 14.11.).
+   Echte Kosten: Haupt ~1 $/Tag, ~0,22–0,25 $/Frage. MiniBench läuft wieder (Reserve passt). Hochrechnung Nov
+   ~50 $ → Vorschlag an Kevin 14.11.: MiniBench wieder Opus. Gap-Science-Schlüssel: Kevin deaktiviert ihn.
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
