@@ -688,6 +688,7 @@ class FallTemplateBot2026(ForecastBot):
 
 OPUS = "anthropic/claude-opus-5-5"
 SONNET = "anthropic/claude-sonnet-5-5"
+TEST_RUN_LIMIT_USD = 5.0
 
 
 def build_bot(forecaster_model: str, publish: bool, thorough: bool) -> FallTemplateBot2026:
@@ -781,7 +782,12 @@ if __name__ == "__main__":
     # exceptions, since return_exceptions=True) which then flows into the
     # summary printers below.
     client = MetaculusClient()
-    with MonetaryCostManager(budget.remaining_until_stop()) as run_cost_manager:
+    # Test runs score nothing, so they may spend at most TEST_RUN_LIMIT_USD; once reached, the
+    # remaining test questions fail with a cost-limit error and the run still records its cost.
+    run_limit = budget.remaining_until_stop()
+    if run_mode == "test_questions":
+        run_limit = min(run_limit, TEST_RUN_LIMIT_USD)
+    with MonetaryCostManager(run_limit) as run_cost_manager:
         try:
             if run_mode == "tournament":
                 seasonal_tournament_reports = asyncio.run(
