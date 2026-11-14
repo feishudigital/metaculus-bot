@@ -31,8 +31,8 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
    (Ja/Nein +16,2, Zahlen −2,1, Stufen −7,0; keine Recherchelücke, kein Code-Fix); neu prüfen ab 20 Zahlenfragen Haupt.
 3. **forecasting-tools 0.3.5 zählte jeden LLM-Aufruf doppelt** (Mock-Test 14.11.: 2,2e-5 vs. litellm 1,1e-5; 0.3.7 korrekt).
    Kostenbuch halbiert (f49824f): Okt 3,03 $, Nov 21,65 $ = Console 21,36 $ (Schlüssel „Metaculus“, 14.11.).
-   Echte Kosten: Haupt ~1 $/Tag, ~0,22–0,25 $/Frage. MiniBench läuft wieder (Reserve passt). Hochrechnung Nov
-   ~50 $ → Vorschlag an Kevin 14.11.: MiniBench wieder Opus. Gap-Science-Schlüssel: Kevin deaktiviert ihn.
+   Gemessen 14.11.: normal ~0,20 $/Frage, gründlich (2×5, high) 0,57 $/Frage; zwei Testläufe (bot-testing-area) 8,23 $,
+   Testläufe seither auf 5 $ gedeckelt. Gap-Science-Schlüssel: Kevin deaktiviert ihn in der Console.
 
 ## Fallen
 - forecasting-tools 0.3.5 lässt `temperature` automatisch weg, wenn ein Modell ihn ablehnt; trotzdem nie setzen.
