@@ -19,16 +19,16 @@ LEDGER_PATH = Path(__file__).parent / "kosten.json"
 RUN_COST_PATH = Path(__file__).parent / "run_cost.json"
 
 # The bot may use the free API credit ($100/month, reset on the 1st) but never
-# more. The cap stays below it to leave headroom for cost-tracking gaps:
-# BOT_MONTHLY_BUDGET_USD repo variable, unset 95 (Kevin 02.11.2026). BOT_BUDGET_MONTH_OVERRIDE
-# ("2026-10=12") replaces it for that one month only, e.g. when other usage
-# already spent part of the credit. Forecasts fall back to Sonnet from 80 %.
+# more, and should use as much of it as it can (Kevin 14.11.2026). The cap stays
+# below the credit to leave headroom for cost-tracking gaps: BOT_MONTHLY_BUDGET_USD
+# repo variable, unset 95 (Kevin 02.11.2026). BOT_BUDGET_MONTH_OVERRIDE ("2026-10=12")
+# replaces it for that one month only, e.g. when other usage already spent part of the credit.
 DEFAULT_CAP_USD = 95.0
-SAVE_SHARE = 0.8
-# Below the Sonnet threshold, this much per remaining day of the month stays reserved for
-# the main tournament (~4 questions a day at ~0.50 $). MiniBench only gets what lies above
-# it, because the main tournament's prize pool is ~10x larger per question (Kevin 02.11.2026;
-# Sonnet alone made MiniBench only ~10 % cheaper, since web research dominates the cost).
+# This much per remaining day stays reserved for the main tournament on Opus (about 4
+# questions a day at ~0.25 $ with normal settings, ~0.45 $ when thorough). MiniBench only
+# runs while spend plus this reserve stays below the cap, because the main tournament's
+# prize pool is ~10x larger per question (Kevin 02.11.2026). When even the reserve no longer
+# fits, the main tournament falls back to Sonnet ("save") until the cap stops the bot.
 MAIN_RESERVE_PER_DAY_USD = 2.0
 
 BudgetMode = Literal["full", "save", "stop"]
@@ -66,14 +66,31 @@ def remaining_until_stop() -> float:
     return max(cap_this_month() - spent_this_month(), 0.0)
 
 
+def _month_elapsed_and_length(now: datetime | None = None) -> tuple[float, int]:
+    now = now or datetime.now(timezone.utc)
+    days_in_month = calendar.monthrange(now.year, now.month)[1]
+    elapsed_days = now.day - 1 + (now.hour + now.minute / 60) / 24
+    return elapsed_days, days_in_month
+
+
 def main_tournament_reserve() -> float:
-    now = datetime.now(timezone.utc)
-    days_left = calendar.monthrange(now.year, now.month)[1] - now.day + 1
-    return MAIN_RESERVE_PER_DAY_USD * days_left
+    elapsed_days, days_in_month = _month_elapsed_and_length()
+    return MAIN_RESERVE_PER_DAY_USD * (days_in_month - elapsed_days)
+
+
+def pace_target() -> float:
+    """Spend that an even use of the cap over the month would have reached by now."""
+    elapsed_days, days_in_month = _month_elapsed_and_length()
+    return cap_this_month() * elapsed_days / days_in_month
+
+
+def thorough_allowed() -> bool:
+    """Below the even pace there is money to spare: forecast more thoroughly."""
+    return spent_this_month() < pace_target()
 
 
 def minibench_allowed() -> bool:
-    return spent_this_month() + main_tournament_reserve() < SAVE_SHARE * cap_this_month()
+    return budget_mode() == "full"
 
 
 def budget_mode() -> BudgetMode:
@@ -81,7 +98,7 @@ def budget_mode() -> BudgetMode:
     cap = cap_this_month()
     if spent >= cap:
         return "stop"
-    if spent >= SAVE_SHARE * cap:
+    if spent + main_tournament_reserve() >= cap:
         return "save"
     return "full"
 

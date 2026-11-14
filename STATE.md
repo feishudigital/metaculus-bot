@@ -7,16 +7,16 @@ Fork von `Metaculus/metac-bot-template` als `feishudigital/metaculus-bot` (öffe
 Läuft per GitHub Actions im FutureEval-Bot-Wettbewerb (Herbst 2026) und in der MiniBench.
 Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-2026-10`.
 
-## Aufbau (Commit c7b73bb)
+## Aufbau
 - Recherche: Claude Sonnet 5.5 mit Websuche (max. 5 Suchen je Frage, über litellm `web_search_options`).
-- Prognose: 3× Opus 5.5 im Hauptwettbewerb, 3× Sonnet in der MiniBench (Kevin 02.11.: Topf/Frage ~165 $ vs. ~17 $), Median.
-  MiniBench nur, solange 2 $ je Resttag unter der Sonnet-Schwelle fürs Hauptturnier frei bleiben (`budget.minibench_allowed`).
+- Prognose: Opus 5.5 im Hauptwettbewerb und in der MiniBench (Kevin 14.11.), Median. Tempo-Regel (Kevin 14.11.:
+  „immer den vollen Betrag ausnutzen“): unter gleichmäßigem Monatstempo (95 $ × Monatsanteil) 5 Prognosen mit Effort
+  high, sonst 3 mit medium (`budget.thorough_allowed`). Sonnet/MiniBench aus erst, wenn 2 $ × Resttage nicht mehr passen.
 - Parser/Zusammenfassung: Claude Haiku 5.5.
 - Kostendeckel `budget.py`: Kostenbuch `kosten.json` (je Monat, vom Workflow zurück-committet).
   Kevin 28.10.: Der Bot darf das ganze freie API-Guthaben nutzen (100 $/Monat, Reset am 1.), aber NIE darüber. Kein anderes Projekt nutzt die API zurzeit; ändert sich das, sagt Kevin Bescheid → Deckel senken.
   Deckel = Repo-Variable `BOT_MONTHLY_BUDGET_USD` (ohne Variable 95 $, Kevin 02.11.; 5 $ Reserve für Zählfehler);
-  `BOT_BUDGET_MONTH_OVERRIDE` = „JJJJ-MM=Betrag“ gilt nur für diesen einen Monat. Ab 80 % Sonnet statt Opus,
-  am Deckel setzt der Bot bis Monatsende aus. Das Kostenbuch kennt nur die Bot-Kosten.
+  `BOT_BUDGET_MONTH_OVERRIDE` = „JJJJ-MM=Betrag“ nur für einen Monat. Am Deckel Pause bis Monatsende.
 - Nur die Prognose-Jobs (Tournament + Test) teilen die Warteschlange `bot-forecast` (max. 180 min; seit 02.11., weil am
   30.10. ein hängender save_ledger 24 h alles blockierte → 4 Fragen verpasst). Der Bot-Job hat nur Leserechte und
   checkt immer die Spitze von main aus. Er übergibt nur die eigenen Laufkosten (`run_cost.json`) als Artefakt an

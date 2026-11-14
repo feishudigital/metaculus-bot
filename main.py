@@ -690,11 +690,13 @@ OPUS = "anthropic/claude-opus-5-5"
 SONNET = "anthropic/claude-sonnet-5-5"
 
 
-def build_bot(forecaster_model: str, publish: bool) -> FallTemplateBot2026:
-    """Bot with three forecasts per question from forecaster_model, Sonnet web research and Haiku helpers."""
+def build_bot(forecaster_model: str, publish: bool, thorough: bool) -> FallTemplateBot2026:
+    """Bot with Sonnet web research and Haiku helpers. forecaster_model makes three forecasts
+    per question at medium effort, or five at high effort when the budget runs below its
+    even monthly pace (thorough), so the monthly credit gets used (Kevin 14.11.2026)."""
     return FallTemplateBot2026(
         research_reports_per_question=1,
-        predictions_per_research_report=3,
+        predictions_per_research_report=5 if thorough else 3,
         use_research_summary_to_forecast=False,
         publish_reports_to_metaculus=publish,
         folder_to_save_reports_to=None,
@@ -703,8 +705,8 @@ def build_bot(forecaster_model: str, publish: bool) -> FallTemplateBot2026:
         llms={
             "default": GeneralLlm(
                 model=forecaster_model,
-                reasoning_effort="medium",
-                timeout=300,
+                reasoning_effort="high" if thorough else "medium",
+                timeout=600 if thorough else 300,
                 allowed_tries=2,
             ),
             "researcher": GeneralLlm(
@@ -752,13 +754,19 @@ if __name__ == "__main__":
         print("Monthly budget reached, not forecasting until next month.")
         sys.exit(0)
 
-    # Opus only for the main tournament (prize pool ~165 $ per question). MiniBench (~17 $ per
-    # question) always uses Sonnet so the monthly cap lasts for the main tournament (Kevin 02.11.2026).
-    # Once spend passes budget.SAVE_SHARE of the cap, Sonnet replaces Opus there as well.
-    main_model = OPUS if mode == "full" else SONNET
-    template_bot = build_bot(main_model, publish_to_metaculus)
-    minibench_bot = build_bot(SONNET, publish_to_metaculus)
-    print(f"Forecaster: {main_model} (main tournament), {SONNET} (MiniBench)")
+    # Opus for the main tournament and MiniBench (Kevin 14.11.2026). Sonnet replaces it only
+    # in "save" mode, when the reserve for the rest of the month no longer fits under the cap.
+    forecaster_model = OPUS if mode == "full" else SONNET
+    thorough = budget.thorough_allowed()
+    template_bot = build_bot(forecaster_model, publish_to_metaculus, thorough)
+    print(
+        f"Forecaster: {forecaster_model}, "
+        + (
+            f"thorough (5 forecasts, high effort): spend is below the even pace of ${budget.pace_target():.2f}"
+            if thorough
+            else f"normal (3 forecasts, medium effort): spend is at or above the even pace of ${budget.pace_target():.2f}"
+        )
+    )
 
     # Per-mode tournament URL shown in the summary banner footer. These
     # piggyback on the forecasting_tools SDK constants and need updating
@@ -784,7 +792,7 @@ if __name__ == "__main__":
                 minibench_reports = []
                 if budget.minibench_allowed():
                     minibench_reports = asyncio.run(
-                        minibench_bot.forecast_on_tournament(
+                        template_bot.forecast_on_tournament(
                             client.CURRENT_MINIBENCH_ID, return_exceptions=True
                         )
                     )
