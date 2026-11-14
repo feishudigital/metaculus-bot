@@ -26,9 +26,9 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 ## Offen
 1. ✓ Secrets `METACULUS_TOKEN` + `ANTHROPIC_API_KEY`; Cup-Workflow aus (kein Bot-Preisgeld); Test nur von Hand.
 2. Auslöser: Pi-Cron `3,33` (Dispatch-API, Kevins OK 02.11.), GitHub-Cron nur `47 */3` als Rückfall.
-   Prüfung 14.11.: 279 von 281 Läufen 08.–14.11. grün (11.11.: 1× GitHub-Startfehler, 1× save_ledger
-   abgebrochen ohne Kosten), Pi-Fehler nur 3× am 04./05.11. (HTTP 000/500). Hauptwettbewerb: 40 von 40
-   neuesten Fragen beantwortet. Verpasst vor dem 02.11.: MiniBench 46368–46395, Haupt 46281 + 46285–46288.
+   Prüfung 14.11.: 279/281 Läufe 08.–14.11. grün (2 Ausreißer 11.11. ohne Kosten), Pi-Fehler nur 3× 04./05.11. Haupt: 40/40
+   neuesten beantwortet. Ergebnis 14.11. (`reviews/2026-11-14-minibench.md`): MiniBench 32 Fragen Schnitt +3,6
+   (Ja/Nein +16,2, Zahlen −2,1, Stufen −7,0; keine Recherchelücke, kein Code-Fix); neu prüfen ab 20 Zahlenfragen Haupt.
 3. Oktober 6,07 $, November 43,29 $ (14.11.); Hauptwettbewerb ~2,0 $/Tag (06.–14.11.). MiniBench pausiert seit
    05.11. (Reserve-Regel) → Hochrechnung ~77 $ am 30.11., ~18 $ unter dem Deckel ungenutzt. Vorschlag an Kevin
    (14.11.): Sonnet-Schwelle und MiniBench an Reserve statt fester 80 % koppeln. Voraussetzung: Console-Abgleich
