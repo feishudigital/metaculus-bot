@@ -10,8 +10,8 @@ Hintergrund, Regeln, Preisgeld: Memory `reference-passiv-ki-trading-optionen-202
 ## Aufbau
 - Recherche: Claude Sonnet 5.5 mit Websuche (max. 5 Suchen je Frage, über litellm `web_search_options`).
 - Prognose: Opus 5.5 im Hauptwettbewerb und in der MiniBench (Kevin 14.11.), Median. Tempo-Regel (Kevin 14.11.:
-  „immer den vollen Betrag ausnutzen“): unter gleichmäßigem Monatstempo (95 $ × Monatsanteil) 5 Prognosen mit Effort
-  high, sonst 3 mit medium (`budget.thorough_allowed`). Sonnet/MiniBench aus erst, wenn 2 $ × Resttage nicht mehr passen.
+  „immer den vollen Betrag ausnutzen“): unter gleichmäßigem Monatstempo (95 $ × Monatsanteil) 2 Recherchen × 5 Prognosen
+  Effort high (~0,60 $/Frage), sonst 1 × 3 medium (~0,20 $) (`budget.thorough_allowed`). Sonnet/MiniBench aus erst, wenn 2 $ × Resttage nicht mehr passen.
 - Parser/Zusammenfassung: Claude Haiku 5.5.
 - Kostendeckel `budget.py`: Kostenbuch `kosten.json` (je Monat, vom Workflow zurück-committet).
   Kevin 28.10.: Der Bot darf das ganze freie API-Guthaben nutzen (100 $/Monat, Reset am 1.), aber NIE darüber. Kein anderes Projekt nutzt die API zurzeit; ändert sich das, sagt Kevin Bescheid → Deckel senken.

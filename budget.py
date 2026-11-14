@@ -25,7 +25,7 @@ RUN_COST_PATH = Path(__file__).parent / "run_cost.json"
 # replaces it for that one month only, e.g. when other usage already spent part of the credit.
 DEFAULT_CAP_USD = 95.0
 # This much per remaining day stays reserved for the main tournament on Opus (about 4
-# questions a day at ~0.25 $ with normal settings, ~0.45 $ when thorough). MiniBench only
+# questions a day at ~0.20 $ with normal settings, ~0.60 $ when thorough). MiniBench only
 # runs while spend plus this reserve stays below the cap, because the main tournament's
 # prize pool is ~10x larger per question (Kevin 02.11.2026). When even the reserve no longer
 # fits, the main tournament falls back to Sonnet ("save") until the cap stops the bot.

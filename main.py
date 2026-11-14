@@ -692,11 +692,13 @@ TEST_RUN_LIMIT_USD = 5.0
 
 
 def build_bot(forecaster_model: str, publish: bool, thorough: bool) -> FallTemplateBot2026:
-    """Bot with Sonnet web research and Haiku helpers. forecaster_model makes three forecasts
-    per question at medium effort, or five at high effort when the budget runs below its
-    even monthly pace (thorough), so the monthly credit gets used (Kevin 14.11.2026)."""
+    """Bot with Sonnet web research and Haiku helpers. Normally one research report and three
+    forecasts from forecaster_model at medium effort. When the budget runs below its even
+    monthly pace (thorough), two independent research reports with five high-effort forecasts
+    each (~0.60 $ instead of ~0.20 $ per question), so the monthly credit gets used
+    (Kevin 14.11.2026: always use the full amount, never more)."""
     return FallTemplateBot2026(
-        research_reports_per_question=1,
+        research_reports_per_question=2 if thorough else 1,
         predictions_per_research_report=5 if thorough else 3,
         use_research_summary_to_forecast=False,
         publish_reports_to_metaculus=publish,
@@ -763,7 +765,7 @@ if __name__ == "__main__":
     print(
         f"Forecaster: {forecaster_model}, "
         + (
-            f"thorough (5 forecasts, high effort): spend is below the even pace of ${budget.pace_target():.2f}"
+            f"thorough (2 research reports x 5 forecasts, high effort): spend is below the even pace of ${budget.pace_target():.2f}"
             if thorough
             else f"normal (3 forecasts, medium effort): spend is at or above the even pace of ${budget.pace_target():.2f}"
         )
